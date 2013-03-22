@@ -14,3 +14,5 @@ Needed dependencies for Apache POI 3.9:
 
 This project is based on this [blog](http://www.technipelago.se/content/technipelago/blog/44) but adds some functionality and is compatible with .xlsx format.
 
+See [tests](https://github.com/florent-blanvillain/gexcelslurper/blob/master/test/org/gexcelslurper/ExcelSlurperTest.groovy)
+
