@@ -1,20 +1,25 @@
 package org.gexcelslurper
 
-import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.usermodel.Cell
+import org.apache.poi.ss.usermodel.DataFormatter
+import org.apache.poi.ss.usermodel.DateUtil
+import org.apache.poi.ss.usermodel.Row
 
 class RowSlurper {
     Row row
+    SheetSlurper sheetSlurper
     List<String> labels
     int rowIndex
 
-    RowSlurper(Row row, List<String> labels) {
+    RowSlurper(Row row, SheetSlurper sheetSlurper) {
         this.row = row
-        this.labels = labels
+        this.sheetSlurper = sheetSlurper
+        this.labels = sheetSlurper.labels
         this.rowIndex = row.rowNum
     }
 
     def cell(def idx) {
-        if (labels && (idx instanceof String)) {
+        if (idx instanceof String) {
             idx = labels.indexOf(idx.toLowerCase())
         }
         def cell = row.getCell(idx)
@@ -43,5 +48,9 @@ class RowSlurper {
 
     def propertyMissing(String name) {
         cell(name)
+    }
+
+    def getAt(def index) {
+        cell(index)
     }
 }

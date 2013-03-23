@@ -2,46 +2,23 @@ package org.gexcelslurper
 
 import org.apache.poi.ss.usermodel.*
 
-class ExcelSlurper {
+class XlsWorkbookSlurper {
     Workbook workbook
-    Sheet sheetUnderIteration = null
 
-    ExcelSlurper(String filePath) {
+    XlsWorkbookSlurper(String filePath) {
         this(new File(filePath))
     }
 
-    ExcelSlurper(File file) {
+    XlsWorkbookSlurper(File file) {
         this(file.newInputStream())
     }
 
-    ExcelSlurper(URL url) {
+    XlsWorkbookSlurper(URL url) {
         this(url.openStream())
     }
 
-    ExcelSlurper(InputStream is) {
+    XlsWorkbookSlurper(InputStream is) {
         workbook = WorkbookFactory.create(is)
-    }
-
-    def eachLine(Map params = [:], Closure closure) {
-        int offset = params.offset ?: 0
-        int max = params.max ?: 9999999
-        Sheet sheet = sheetUnderIteration ?: getSheet(params.sheet)
-        Iterator<Row> rowIterator = sheet.rowIterator()
-        def linesRead = 0
-
-        List<String> labels = null
-        if (params.labels) {
-            labels = rowIterator.next().collect { it.toString().toLowerCase() }
-        }
-
-        offset.times { rowIterator.next() }
-
-        while (rowIterator.hasNext() && linesRead++ < max) {
-            Row row = rowIterator.next()
-
-            closure.setDelegate(new RowSlurper(row, labels))
-            closure.call(linesRead)
-        }
     }
 
     def eachSheet(Map params = [:], Closure closure) {
@@ -51,12 +28,31 @@ class ExcelSlurper {
 
         (offset..max).each { int i ->
             Sheet sheet = getSheet(i)
-            sheetUnderIteration = sheet
             closure.setDelegate(new SheetSlurper(sheet, this))
             closure.call(i)
         }
+    }
 
-        sheetUnderIteration = null
+    /**
+     * @param params  parameters:
+     * <ul>
+     * <li>offset</li>
+     * <li>labels: "labels:true" same as "offset:1"</li>
+     * <li>max</li>
+     * <li>sheet</li>
+     * </ul>
+     * @param closure
+     */
+    def eachRow(Map params = [:], Closure closure) {
+            new SheetSlurper(getSheet(params.sheet) ,this).eachRow(params, closure)
+    }
+
+    def getAt(def index) {
+        new SheetSlurper(getSheet(index) ,this)
+    }
+
+    def propertyMissing(String name) {
+        new SheetSlurper(getSheet(name) ,this)
     }
 
     List<String> getSheetNames() {

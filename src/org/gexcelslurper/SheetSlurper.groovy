@@ -1,19 +1,53 @@
 package org.gexcelslurper
 
-import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.usermodel.Row
+import org.apache.poi.ss.usermodel.Sheet
 
 class SheetSlurper {
     Sheet sheet
-    ExcelSlurper slurper
+    XlsWorkbookSlurper slurper
     String sheetName
     int sheetIndex
-    def eachLine
+    List<String> labels
 
-    SheetSlurper(Sheet sheet, ExcelSlurper slurper) {
+    SheetSlurper(Sheet sheet, XlsWorkbookSlurper slurper) {
         this.sheet = sheet
         this.slurper = slurper
         this.sheetName = sheet.sheetName
         this.sheetIndex = sheet.workbook.getSheetIndex(sheetName)
-        this.eachLine = slurper.&eachLine
+        this.labels = this[0]?.row*.toString()
+    }
+
+    /**
+     * @param params parameters:
+     * <ul>
+     * <li>offset</li>
+     * <li>labels: "labels:true" same as "offset:1"</li>
+     * <li>max</li>
+     * </ul>
+     * @param closure
+     */
+    def eachRow(Map params = [:], Closure closure) {
+        int offset = params.offset ?: 0
+        int max = params.max ?: 9999999
+        Iterator<Row> rowIterator = sheet.rowIterator()
+        def linesRead = 0
+
+        if (params.labels) {
+            rowIterator.next()
+        }
+
+        offset.times { rowIterator.next() }
+
+        while (rowIterator.hasNext() && linesRead++ < max) {
+            Row row = rowIterator.next()
+
+            closure.setDelegate(new RowSlurper(row, this))
+            closure.call(linesRead)
+        }
+    }
+
+    def getAt(int index) {
+        new RowSlurper(sheet.getRow(index), this)
     }
 }

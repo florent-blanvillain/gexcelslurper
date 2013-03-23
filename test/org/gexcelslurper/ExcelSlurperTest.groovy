@@ -5,22 +5,33 @@ import org.junit.Test
 public class ExcelSlurperTest {
     static final String XLSX = 'gexcelslurper.xlsx'
     static final URL XLSX_URL = ClassLoader.systemClassLoader.getResource(XLSX)
-    static final ExcelSlurper slurper = new ExcelSlurper(XLSX_URL)
+    static final URL XLS_URL = ClassLoader.systemClassLoader.getResource('gexcelslurper.xls')
+    static final XlsWorkbookSlurper xlsWorkbookSlurper = new XlsWorkbookSlurper(XLSX_URL)
 
     @Test
-    void load() {
-        new ExcelSlurper(new File(this.class.classLoader.getResource(XLSX).file)).eachLine([max: 1]) {
+    void "load xls or xlsx files from File or URL"() {
+        assert new XlsWorkbookSlurper(new File(this.class.classLoader.getResource(XLSX).file)).breaking[2].character == 'jesse'
+
+        new XlsWorkbookSlurper(XLSX_URL).eachRow([max: 1]) {
             assert rowIndex == 0
         }
 
-        new ExcelSlurper(XLSX_URL).eachLine([max: 1]) {
-            assert rowIndex == 0
-        }
+        assert new XlsWorkbookSlurper(XLS_URL)[0][0][0] == 'I can read old xls'
     }
 
     @Test
-    void iterateOverLines() {
-        slurper.eachLine([max: 2, labels: true]) {
+    void "direct access to cells"() {
+        assert xlsWorkbookSlurper.breaking[2].character == 'jesse'
+    }
+
+    @Test
+    void sheetNames() {
+        assert xlsWorkbookSlurper.sheetNames == ['breaking', 'bad']
+    }
+
+    @Test
+    void iterateOverRows() {
+        xlsWorkbookSlurper.eachRow([max: 2, labels: true]) {
             assert rowIndex in [1, 2]
             switch (actor) {
                 case 'bryan':
@@ -34,19 +45,14 @@ public class ExcelSlurperTest {
 
     @Test
     void iterateOverSheets() {
-        slurper.eachSheet {
+        xlsWorkbookSlurper.eachSheet {
             assert sheetIndex in [0, 1]
-            eachLine([offset: 2]) {
+            eachRow([offset: 2]) {
                 if (sheetName == 'bad') {
                     assert cell(0) == 'The Cat\'s in the Bag'
                     assert sheetIndex == 1
                 }
             }
         }
-    }
-
-    @Test
-    void sheetNames() {
-        assert slurper.sheetNames == ['breaking', 'bad']
     }
 }
