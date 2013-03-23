@@ -1,6 +1,7 @@
 package org.gexcelslurper
 
 import org.junit.Test
+import static org.junit.Assert.assertEquals
 
 public class ExcelSlurperTest {
     static final String XLSX = 'gexcelslurper.xlsx'
@@ -20,8 +21,11 @@ public class ExcelSlurperTest {
     }
 
     @Test
-    void "direct access to cells"() {
-        assert xlsWorkbookSlurper.breaking[2].character == 'jesse'
+    void "direct access to cells by indexes of names if any"() {
+        assertEquals xlsWorkbookSlurper[0][2][1], 'jesse'
+
+        assertEquals "'breaking' is the name of the first sheet and 'character' is the first cell value of the second row",
+                xlsWorkbookSlurper.breaking[2].character, 'jesse'
     }
 
     @Test

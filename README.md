@@ -1,7 +1,15 @@
 gexcelslurper
 =============
 
-Groovy Excel Slurper, reads excel with groovy and POI
+Groovy Excel Slurper, easily reads Excel files thanks to Groovy and Apache POI
+
+What it can do for you in a groovy way:
+* read xls and xlsx files
+* direct access to cells values
+* iterate over sheets and rows
+* access sheets and rows by names
+
+See [tests](https://github.com/florent-blanvillain/gexcelslurper/blob/master/test/org/gexcelslurper/ExcelSlurperTest.groovy) for more.
 
 It requires Apache POI from version 3.5.
 
@@ -15,5 +23,4 @@ For Apache POI 3.9 the following is also needed:
 This small lib is based on the source code found on this [blog post](http://www.technipelago.se/content/technipelago/blog/44) but goes beyond.
 It can be used as a drop-in replacement for the latter, except that you have `XlsWorkbookSlurper` class instead of `ExcelBuilder` and `eachRow` method instead of `eachLine`.
 
-See [tests](https://github.com/florent-blanvillain/gexcelslurper/blob/master/test/org/gexcelslurper/ExcelSlurperTest.groovy) for more code examples.
 
