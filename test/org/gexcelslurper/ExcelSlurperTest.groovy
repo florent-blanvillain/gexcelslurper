@@ -44,10 +44,23 @@ public class ExcelSlurperTest {
 
     @Test
     void "list rows values of a sheet"() {
-        List<RowSlurper> list
         assertEquals([["season 1"], ["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList())
         assertEquals([["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList([labels: true]))
         assertEquals([["bryan", "walter"], ["aaron", "jesse"], ["anna", "skyler"]], xlsWorkbookSlurper.breaking.toList([labels: true]))
+    }
+
+    @Test
+    void "list rows values of a workbook"() {
+        assertEquals([
+                [["actor", "character"], ["bryan", "walter"], ["aaron", "jesse"], ["anna", "skyler"]],
+                [["season 1"], ["Pilot"], ["The Cat's in the Bag"]]
+        ],  xlsWorkbookSlurper.toList())
+    }
+
+    @Test
+    void findAll() {
+        assertEquals([['aaron', 'jesse']], xlsWorkbookSlurper.breaking.findAll { cell(0) == 'aaron' })
+        assertEquals([['aaron', 'jesse']], xlsWorkbookSlurper.findAll { cell(0) == 'aaron' })
     }
 
     @Test
@@ -82,6 +95,8 @@ public class ExcelSlurperTest {
                     assert cell(0) == 'The Cat\'s in the Bag'
                     assert sheetIndex == 1
                     assert rowIndex == 2
+                } else {
+                    assert sheetName == 'breaking'
                 }
             }
         }

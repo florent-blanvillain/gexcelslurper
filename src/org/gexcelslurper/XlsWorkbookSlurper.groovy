@@ -1,6 +1,8 @@
 package org.gexcelslurper
 
-import org.apache.poi.ss.usermodel.*
+import org.apache.poi.ss.usermodel.Sheet
+import org.apache.poi.ss.usermodel.Workbook
+import org.apache.poi.ss.usermodel.WorkbookFactory
 
 class XlsWorkbookSlurper {
     Workbook workbook
@@ -34,7 +36,7 @@ class XlsWorkbookSlurper {
     }
 
     /**
-     * @param params  parameters:
+     * @param params parameters:
      * <ul>
      * <li>offset</li>
      * <li>labels: "labels:true" same as "offset:1"</li>
@@ -44,20 +46,41 @@ class XlsWorkbookSlurper {
      * @param closure
      */
     def eachRow(Map params = [:], Closure closure) {
-            new SheetSlurper(getSheet(params.sheet) ,this).eachRow(params, closure)
+        new SheetSlurper(getSheet(params.sheet), this).eachRow(params, closure)
     }
 
+    List toList(Map params = [:]) {
+        List list = []
+        eachSheet(params) {
+            List rowInSheetList = []
+            delegate.eachRow(params) {
+                rowInSheetList << delegate.toList()
+            }
+            list << rowInSheetList
+        }
+        list
+    }
+
+    List findAll(Map params = [:], Closure closure) {
+        List list = []
+        eachSheet(params) {
+            list.addAll delegate.findAll(params, closure)
+        }
+        list
+    }
+
+
     def getAt(def index) {
-        new SheetSlurper(getSheet(index) ,this)
+        new SheetSlurper(getSheet(index), this)
     }
 
     def propertyMissing(String name) {
-        new SheetSlurper(getSheet(name) ,this)
+        new SheetSlurper(getSheet(name), this)
     }
 
     List<String> getSheetNames() {
         def names = []
-        assert (0..<workbook.numberOfSheets).asList() == [0,1]
+        assert (0..<workbook.numberOfSheets).asList() == [0, 1]
         for (i in 0..<workbook.numberOfSheets) {
             names << workbook.getSheetAt(i).sheetName
         }

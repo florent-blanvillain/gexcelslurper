@@ -61,4 +61,18 @@ class SheetSlurper {
 
         list
     }
+
+    List findAll(Map params = [:], Closure closure) {
+        List list = []
+        def linesRead = 0
+
+        eachRow(params) {
+            closure.setDelegate(delegate)
+            if (closure.call(linesRead++)) {
+                list << delegate.toList()
+            }
+        }
+
+        list
+    }
 }
