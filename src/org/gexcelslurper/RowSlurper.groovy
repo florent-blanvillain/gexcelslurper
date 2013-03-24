@@ -53,4 +53,16 @@ class RowSlurper {
     def getAt(def index) {
         cell(index)
     }
+
+    List toList() {
+        List list = []
+        row.each { Cell cellule ->
+            list << cell(cellule.columnIndex)
+        }
+        list
+    }
+
+    def findAll(Closure closure) {
+        toList().findAll closure
+    }
 }

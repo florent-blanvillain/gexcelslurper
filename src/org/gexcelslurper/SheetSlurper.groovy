@@ -50,4 +50,15 @@ class SheetSlurper {
     def getAt(int index) {
         new RowSlurper(sheet.getRow(index), this)
     }
+
+
+    List toList(Map params = [:]) {
+        List list = []
+
+        eachRow(params) {
+            list << delegate.toList()
+        }
+
+        list
+    }
 }

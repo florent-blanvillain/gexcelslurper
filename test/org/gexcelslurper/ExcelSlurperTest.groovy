@@ -1,6 +1,7 @@
 package org.gexcelslurper
 
 import org.junit.Test
+
 import static org.junit.Assert.assertEquals
 
 public class ExcelSlurperTest {
@@ -22,10 +23,13 @@ public class ExcelSlurperTest {
 
     @Test
     void "direct access to cells by indexes of names if any"() {
-        assertEquals xlsWorkbookSlurper[0][2][1], 'jesse'
+        // access to cells : first index is the sheet, second is the row, third is the column
+        // indexes are always 0-based
+        assertEquals 'jesse', xlsWorkbookSlurper[0][2][1]
 
-        assertEquals "'breaking' is the name of the first sheet and 'character' is the first cell value of the second row",
-                xlsWorkbookSlurper.breaking[2].character, 'jesse'
+        // 'breaking' is the name of the first sheet and 'character' is the value of the first cell of the second row.
+        // first row cells are automatically taken as labels for columns
+        assertEquals 'jesse', xlsWorkbookSlurper.breaking[2].character
     }
 
     @Test
@@ -34,9 +38,23 @@ public class ExcelSlurperTest {
     }
 
     @Test
+    void "list values of a row"() {
+        assertEquals(['aaron', 'jesse'], xlsWorkbookSlurper[0][2].toList())
+    }
+
+    @Test
+    void "list rows values of a sheet"() {
+        List<RowSlurper> list
+        assertEquals([["season 1"], ["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList())
+        assertEquals([["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList([labels: true]))
+        assertEquals([["bryan", "walter"], ["aaron", "jesse"], ["anna", "skyler"]], xlsWorkbookSlurper.breaking.toList([labels: true]))
+    }
+
+    @Test
     void iterateOverRows() {
+        // by default, eachRow iterates over the first sheet's rows
+        // if labels is set to true, the first line of the sheet is ignored
         xlsWorkbookSlurper.eachRow([max: 2, labels: true]) {
-            assert rowIndex in [1, 2]
             switch (actor) {
                 case 'bryan':
                     assert character == "walter"
@@ -45,16 +63,25 @@ public class ExcelSlurperTest {
                     assert character == "jesse"
             }
         }
+
+        // but you may specify another sheet by its name or index (always 0-based)
+        // you may set an offset almost everywhere
+        xlsWorkbookSlurper.eachRow([sheet: 1, max: 1, labels: true, offset: 1]) {
+            assert cell(0) == "The Cat's in the Bag"
+        }
     }
 
     @Test
     void iterateOverSheets() {
+        // eachSheet and eachRow can be nested
+        // sheetIndex, sheetName and rowIndex are available in case you need it
         xlsWorkbookSlurper.eachSheet {
             assert sheetIndex in [0, 1]
             eachRow([offset: 2]) {
                 if (sheetName == 'bad') {
                     assert cell(0) == 'The Cat\'s in the Bag'
                     assert sheetIndex == 1
+                    assert rowIndex == 2
                 }
             }
         }

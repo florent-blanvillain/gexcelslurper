@@ -7,7 +7,9 @@ What it can do for you in a groovy way:
 * read xls and xlsx files
 * direct access to cells values
 * iterate over sheets and rows
-* access sheets and rows by names
+* access sheets and rows by name
+* get all values from a row, a sheet or even a whole workbook with toList() methods
+* offset, max, labels options
 
 See [tests](https://github.com/florent-blanvillain/gexcelslurper/blob/master/test/org/gexcelslurper/ExcelSlurperTest.groovy) for more.
 
