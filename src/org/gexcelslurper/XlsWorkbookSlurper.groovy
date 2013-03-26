@@ -78,6 +78,15 @@ class XlsWorkbookSlurper {
         result
     }
 
+    RowSlurper findRowSlurper(Map params = [:], Closure closure) {
+        RowSlurper result = null
+        for (i in 0..(workbook.numberOfSheets - 1)) {
+            def sheetSlurper = new SheetSlurper(getSheet(params.sheet), this)
+            if ((result = sheetSlurper.findRowSlurper(params, closure))) break
+        }
+        result
+    }
+
     def getAt(def index) {
         new SheetSlurper(getSheet(index), this)
     }

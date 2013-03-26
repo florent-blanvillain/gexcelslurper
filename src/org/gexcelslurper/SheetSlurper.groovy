@@ -76,8 +76,8 @@ class SheetSlurper {
         list
     }
 
-    List find(Map params = [:], Closure closure) {
-        List result
+    RowSlurper findRowSlurper(Map params = [:], Closure closure) {
+        RowSlurper rowSlurperResult = null
 
         int offset = params.offset ?: 0
         int max = params.max ?: 9999999
@@ -90,14 +90,18 @@ class SheetSlurper {
 
         offset.times { rowIterator.next() }
 
-        while (rowIterator.hasNext() && linesRead++ < max && !result) {
+        while (rowIterator.hasNext() && linesRead++ < max && !rowSlurperResult) {
             Row row = rowIterator.next()
             def rs = new RowSlurper(row, this)
             closure.setDelegate(rs)
             if (closure.call()) {
-                result = rs.toList()
+                rowSlurperResult = rs
             }
         }
-        result
+        rowSlurperResult
+    }
+
+    List find(Map params = [:], Closure closure) {
+        findRowSlurper(params, closure)?.toList()
     }
 }

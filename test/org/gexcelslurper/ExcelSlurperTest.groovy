@@ -61,7 +61,18 @@ public class ExcelSlurperTest {
     void findAll() {
         assertEquals([['aaron', 'jesse']], xlsWorkbookSlurper.breaking.findAll { cell(0) == 'aaron' })
         assertEquals([['aaron', 'jesse'], ["anna", "skyler"]], xlsWorkbookSlurper.findAll(labels:true) { cell(0).startsWith('a') })
+    }
+
+    @Test
+    void find() {
+        assertEquals(['aaron', 'jesse'], xlsWorkbookSlurper.breaking.find(offset:1) { cell(0).startsWith('a') })
         assertEquals(['aaron', 'jesse'], xlsWorkbookSlurper.find(offset:1) { cell(0).startsWith('a') })
+    }
+
+    @Test
+    void findRowSlurper() {
+        assertEquals(3, xlsWorkbookSlurper.breaking.findRowSlurper { cell(1) == "skyler" }.rowIndex)
+        assertEquals(3, xlsWorkbookSlurper.findRowSlurper { cell(1) == "skyler" }.rowIndex)
     }
 
     @Test
