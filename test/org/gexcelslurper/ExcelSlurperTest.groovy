@@ -45,8 +45,8 @@ public class ExcelSlurperTest {
     @Test
     void "list rows values of a sheet"() {
         assertEquals([["season 1"], ["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList())
-        assertEquals([["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList([labels: true]))
-        assertEquals([["bryan", "walter"], ["aaron", "jesse"], ["anna", "skyler"]], xlsWorkbookSlurper.breaking.toList([labels: true]))
+        assertEquals([["Pilot"], ["The Cat's in the Bag"]], xlsWorkbookSlurper.bad.toList(labels: true))
+        assertEquals([["bryan", "walter"], ["aaron", "jesse"], ["anna", "skyler"]], xlsWorkbookSlurper.breaking.toList(labels: true))
     }
 
     @Test
@@ -60,14 +60,15 @@ public class ExcelSlurperTest {
     @Test
     void findAll() {
         assertEquals([['aaron', 'jesse']], xlsWorkbookSlurper.breaking.findAll { cell(0) == 'aaron' })
-        assertEquals([['aaron', 'jesse']], xlsWorkbookSlurper.findAll { cell(0) == 'aaron' })
+        assertEquals([['aaron', 'jesse'], ["anna", "skyler"]], xlsWorkbookSlurper.findAll(labels:true) { cell(0).startsWith('a') })
+        assertEquals(['aaron', 'jesse'], xlsWorkbookSlurper.find(offset:1) { cell(0).startsWith('a') })
     }
 
     @Test
     void iterateOverRows() {
         // by default, eachRow iterates over the first sheet's rows
         // if labels is set to true, the first line of the sheet is ignored
-        xlsWorkbookSlurper.eachRow([max: 2, labels: true]) {
+        xlsWorkbookSlurper.eachRow(max: 2, labels: true) {
             switch (actor) {
                 case 'bryan':
                     assert character == "walter"
@@ -79,7 +80,7 @@ public class ExcelSlurperTest {
 
         // but you may specify another sheet by its name or index (always 0-based)
         // you may set an offset almost everywhere
-        xlsWorkbookSlurper.eachRow([sheet: 1, max: 1, labels: true, offset: 1]) {
+        xlsWorkbookSlurper.eachRow(sheet: 1, max: 1, labels: true, offset: 1) {
             assert cell(0) == "The Cat's in the Bag"
         }
     }

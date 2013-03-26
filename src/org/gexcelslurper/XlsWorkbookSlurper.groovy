@@ -51,7 +51,7 @@ class XlsWorkbookSlurper {
 
     List toList(Map params = [:]) {
         List list = []
-        eachSheet(params) {
+        eachSheet {
             List rowInSheetList = []
             delegate.eachRow(params) {
                 rowInSheetList << delegate.toList()
@@ -69,6 +69,14 @@ class XlsWorkbookSlurper {
         list
     }
 
+    List find(Map params = [:], Closure closure) {
+        List result = null
+        for (i in 0..(workbook.numberOfSheets - 1)) {
+            def sheetSlurper = new SheetSlurper(getSheet(params.sheet), this)
+            if ((result = sheetSlurper.find(params, closure))) break
+        }
+        result
+    }
 
     def getAt(def index) {
         new SheetSlurper(getSheet(index), this)
