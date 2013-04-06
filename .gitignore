@@ -8,6 +8,7 @@
 /.launch
 /.project
 /.settings
+/.idea
 /*.launch
 /*.tmproj
 /*.iml
@@ -39,7 +40,11 @@
 
 # "temporary" build files
 /target
+/build
+/out
 
 # other
 *.iws
-
+/.gradle
+/lib
+/projectFilesBackup
