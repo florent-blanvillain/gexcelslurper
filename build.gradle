@@ -1,3 +1,6 @@
+group = "org.gexcelslurper"
+version = "1.0"
+
 apply plugin: 'groovy'
 
 repositories {
@@ -26,3 +29,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     from sourceSets.main.allSource
 }
+
+manifest.mainAttributes(
+        "Built-By": System.properties['user.name'],
+        "Created-By": System.properties['java.vm.version'] + " (" + System.properties['java.vm.vendor'] + ")",
+        "Implementation-Title": "gexcelslurper",
+        "Implementation-Version": version
+)

@@ -17,9 +17,9 @@ See [tests](https://github.com/florent-blanvillain/gexcelslurper/blob/master/tes
 This small lib is based on the source code found on this [blog post](http://www.technipelago.se/content/technipelago/blog/44) but goes beyond.
 It can be used as a drop-in replacement for the latter, except that you have to use `XlsWorkbookSlurper` class instead of `ExcelBuilder` and `eachRow` method instead of `eachLine`.
 
-## Installation
+## Usage
 
-Gather src / whole org.gexcelslurper package.
+Build with gradle and gather ./build/gexcelslurper-x.jar
 
 It requires Apache POI from version 3.5.
 
