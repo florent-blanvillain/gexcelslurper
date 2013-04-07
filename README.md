@@ -33,6 +33,6 @@ For Apache POI 3.9 the following is also needed:
 ## Implementation
 
 Three wrappers arround org.apache.poi.ss.usermodel dot `Workbook`, `Sheet` and `Row` : `XlsWorkbookSlurper`, `SheetSlurper` and `RowSlurper`.
-One can easily access wrapped objects respectively `workbook`, `sheet` and `row`.
+One can easily access wrapped objects by accessing `workbook`, `sheet` and `row` properties.
 
 
