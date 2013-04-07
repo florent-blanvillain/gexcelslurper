@@ -19,16 +19,20 @@ It can be used as a drop-in replacement for the latter, except that you have to 
 
 ## Usage
 
-Build with gradle and gather ./build/gexcelslurper-x.jar
+Build with gradle and gather ./build/gexcelslurper-x.jar or just integrate `XlsWorkbookSlurper`, `SheetSlurper` and `RowSlurper` classes in your project.
 
 It requires Apache POI from version 3.5.
 
 Needed dependencies for Apache POI 3.5 to 3.8:
-* 'org.apache.poi:poi:3.x'
-* 'org.apache.poi:poi-ooxml:3.x'
+* `org.apache.poi:poi:3.x`
+* `org.apache.poi:poi-ooxml:3.x`
 
 For Apache POI 3.9 the following is also needed:
-* 'org.apache.poi:poi-ooxml-schemas:3.9'
+* `org.apache.poi:poi-ooxml-schemas:3.9`
 
+## Implementation
+
+Three wrappers arround org.apache.poi.ss.usermodel dot `Workbook`, `Sheet` and `Row` : `XlsWorkbookSlurper`, `SheetSlurper` and `RowSlurper`.
+One can easily access wrapped objects respectively `workbook`, `sheet` and `row`.
 
 
